@@ -34,7 +34,7 @@ const P5Canvas = () => {
     p.setup = () => {
       p.createCanvas(canvasWidth, canvasHeight);
       p.noLoop();
-      p.background(colors.background);
+      p.noStroke();
     };
 
     p.draw = () => {

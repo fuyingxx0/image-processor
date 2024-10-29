@@ -68,8 +68,8 @@ export function pixelPatternSelector(brightness, palette, PosX, PosY) {
     const colorIndex = Math.floor(combo / numPatterns);
     const patternIndex = combo % numPatterns;
 
-    if(patterns[patternIndex][PosY][PosX]) return palette[colorIndex];
-    else return palette[colorIndex + 1];
+    if(patterns[patternIndex][PosY][PosX]) return palette[colorIndex + 1];
+    else return palette[colorIndex];
 
 }
   
