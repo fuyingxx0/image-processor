@@ -26,7 +26,7 @@ const categorizedColorPalettes = {
 
 const gradientColorPalettes = {
   default: [
-    '#A04747', '#343131', '#D8A25E', '#EEDF7A'
+    '#343131', '#A04747' , '#D8A25E', '#EEDF7A'
   ]
 }
 
