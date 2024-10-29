@@ -7,7 +7,11 @@ const P5Canvas = ({
   canvasWidth,
   canvasHeight,
   colors,
-  isolineDensity
+  contourInterval = 20,       // Interval for drawing each contour line
+  terrainNoiseScale = 5,    // Scale for the primary terrain noise
+  brightnessNoiseScale = 0.5, // Scale for brightness-based noise influence
+  zScale = 80,                // Height scale for `z` values based on brightness
+  gridSize = 12               // Interval in pixels for calculating `z` values
 }) => {
   const canvasRef = useRef();
 
@@ -18,6 +22,7 @@ const P5Canvas = ({
 
   const sketch = (p) => {
     let img;
+    let zValues = [];
 
     p.preload = () => {
       img = p.loadImage(imagePath);
@@ -26,40 +31,76 @@ const P5Canvas = ({
     p.setup = () => {
       p.createCanvas(canvasWidth, canvasHeight);
       p.noLoop();
-      p.noFill();
-    };
+      p.background(colors[2]);
 
-    p.draw = () => {
       img.loadPixels();
 
-      // Loop to draw isolines across the entire canvas
-      for (let y = 0; y < p.height; y += 5) {
-        p.beginShape();
-
-        for (let x = 0; x < p.width; x += 5) {
+      // Calculate `z` values on the grid
+      for (let y = 0; y < img.height; y += gridSize) {
+        let row = [];
+        for (let x = 0; x < img.width; x += gridSize) {
           const idx = (y * img.width + x) * 4;
           const r = img.pixels[idx];
           const g = img.pixels[idx + 1];
           const b = img.pixels[idx + 2];
 
           const brightness = (r + g + b) / 3 / 255;
-          const densityFactor = p.map(brightness, 0, 1, isolineDensity, 0.5);
+          const mappedZ = p.map(brightness, 0, 1, zScale, 0);
 
-          // Calculate noise-based position adjustment for the isoline
-          const xOffset = x * 0.01 * densityFactor;
-          const yOffset = y * 0.01 * densityFactor;
-          const noiseVal = p.noise(xOffset, yOffset) * p.TWO_PI;
+          // Generate terrain and brightness-based noise
+          const terrainNoiseVal = p.noise(x * terrainNoiseScale, y * terrainNoiseScale);
+          const brightnessNoiseVal = p.noise(x * brightnessNoiseScale, y * brightnessNoiseScale);
 
-          // Adjust position based on Perlin noise
-          const nx = x + p.cos(noiseVal) * densityFactor * 5;
-          const ny = y + p.sin(noiseVal) * densityFactor * 5;
-
-          p.stroke(colors[0]);
-          p.strokeWeight(1);
-          p.vertex(nx, ny); // Create continuous line across the canvas
+          // Calculate `zValue` with both noise influences
+          const zValue = terrainNoiseVal + mappedZ * brightnessNoiseVal;
+          row.push(zValue);
         }
+        zValues.push(row);
+      }
+    };
 
-        p.endShape();
+    p.draw = () => {
+      // Draw interpolated contours between grid points
+      for (let y = 0; y < img.height; y++) {
+        for (let x = 0; x < img.width; x++) {
+          // Find the closest grid points
+          const x0 = Math.floor(x / gridSize);
+          const y0 = Math.floor(y / gridSize);
+
+          // Calculate the interpolation weights
+          const xWeight = (x % gridSize) / gridSize;
+          const yWeight = (y % gridSize) / gridSize;
+
+          // Get the four surrounding `z` values
+          const z00 = zValues[y0][x0];
+          const z10 = x0 + 1 < zValues[0].length ? zValues[y0][x0 + 1] : z00;
+          const z01 = y0 + 1 < zValues.length ? zValues[y0 + 1][x0] : z00;
+          const z11 = (x0 + 1 < zValues[0].length && y0 + 1 < zValues.length) ? zValues[y0 + 1][x0 + 1] : z00;
+
+          // Bilinear interpolation for the current pixel's `z` value
+          const zInterpolated = 
+            z00 * (1 - xWeight) * (1 - yWeight) +
+            z10 * xWeight * (1 - yWeight) +
+            z01 * (1 - xWeight) * yWeight +
+            z11 * xWeight * yWeight;
+
+          // Calculate gradient (approximate steepness) based on neighboring grid points
+          const gradientX = (z10 - z00) * (1 - yWeight) + (z11 - z01) * yWeight;
+          const gradientY = (z01 - z00) * (1 - xWeight) + (z11 - z10) * xWeight;
+          const gradientMagnitude = Math.sqrt(gradientX ** 2 + gradientY ** 2);
+
+          // Map gradient to stroke weight for contour thickness
+          const maxStrokeWeight = 4; // Maximum thickness for steep regions
+          const minStrokeWeight = 1; // Minimum thickness for flat regions
+          const strokeWeight = 1.5 * p.map(gradientMagnitude, 0, zScale / 2, minStrokeWeight, maxStrokeWeight, true);
+
+          // Draw contour line if `z` is close to a contour interval
+          if (Math.abs(zInterpolated % contourInterval) < 1.2) {
+            p.stroke(colors[0]);
+            p.strokeWeight(strokeWeight);
+            p.point(x, y);
+          }
+        }
       }
     };
   };
