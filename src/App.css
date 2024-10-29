@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0;
+  background-color: #f5f5f5;
 }
 
 .canvas-container {
@@ -9,12 +10,12 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 0px;
-  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .canvas-controls {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
@@ -22,10 +23,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .canvas-wrapper canvas {
-  border-radius: 30px;
+  border-radius: 25px;
+  height: auto;
+  margin: 0;
 }
   
