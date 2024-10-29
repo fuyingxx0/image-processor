@@ -7,15 +7,15 @@ import { selectSymbol } from '../utils/shapes/symbolSelector';
 import { calculateHue, calculateSaturation, calculateBrightness, calculateHSV } from '../utils/colors/calculateHSV';
 import { getColorPalette } from '../assets/color';
 
-const P5Canvas = () => {
-  const imagePath = '/man.jpg'; // Path of the image
-  const canvasWidth = 1024;
-  const canvasHeight = 768;
-  const fontSize = 15;
-  const aspectRatio = 0.6; // Courier font aspect ratio
-  const colors = getColorPalette('hacker');
-  const samplingInterval = 4;
-  
+const P5Canvas = ({ 
+  imagePath,
+  canvasWidth,
+  canvasHeight,
+  fontSize,
+  aspectRatio,
+  colors,
+  samplingInterval
+}) => {
   const canvasRef = useRef();
 
   useEffect(() => {
@@ -59,12 +59,7 @@ const P5Canvas = () => {
     };
   };
 
-  return <>
-    <h1>
-      Symbol Palette
-    </h1>
-    <div ref={canvasRef}></div>
-  </>;
+  return <div ref={canvasRef}></div>;
 };
 
 export default P5Canvas;
