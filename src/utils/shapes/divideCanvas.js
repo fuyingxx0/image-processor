@@ -8,9 +8,7 @@
  * @returns {Array} Array of block dimensions
  */
 
-export function divideIntoBlocks(canvasWidth, canvasHeight, blockSize, aspectRatio) {
-    const blockWidth = Math.floor(blockSize * aspectRatio);
-    const blockHeight = blockSize;
+export function divideIntoBlocks(canvasWidth, canvasHeight, blockWidth, blockHeight) {
   
     const columns = Math.floor(canvasWidth / blockWidth);
     const rows = Math.floor(canvasHeight / blockHeight);

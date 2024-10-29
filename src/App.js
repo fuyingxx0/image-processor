@@ -1,11 +1,13 @@
 // src/App.js
 import React from 'react';
-import P5Canvas from './components/P5Canvas';
+import SymbolPalette from './components/SymbolPalette';
+import PixelArt from './components/PixelArt'
 
 function App() {
   return (
     <div className="App">
-      <P5Canvas />
+      {/* <SymbolPalette /> */}
+      <PixelArt />
     </div>
   );
 }
