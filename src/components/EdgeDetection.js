@@ -10,6 +10,8 @@ const P5Canvas = ({
   colors
 }) => {
   const canvasRef = useRef();
+  const colorBackground = colors[colors.length - 1] || colors.background;
+  const colorStroke = colors[0] || colors.text;
 
   useEffect(() => {
     const p5Instance = new p5(sketch, canvasRef.current);
@@ -27,7 +29,7 @@ const P5Canvas = ({
       p.createCanvas(canvasWidth, canvasHeight);
       p.noLoop();
       p.noFill();
-      p.background(colors.background);
+      p.background(colorBackground);
     };
 
     const calculateGradient = (x, y) => {
@@ -58,7 +60,7 @@ const P5Canvas = ({
       img.resize(canvasWidth, canvasHeight);
       p.push();
       p.strokeWeight(samplingInterval);
-      p.stroke(colors.main);
+      p.stroke(colorStroke);
 
       for (let x = 1; x < canvasWidth - 1; x += samplingInterval) {
         for (let y = 1; y < canvasHeight - 1; y += samplingInterval) {

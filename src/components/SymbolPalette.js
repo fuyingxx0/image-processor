@@ -17,6 +17,8 @@ const P5Canvas = ({
   samplingInterval
 }) => {
   const canvasRef = useRef();
+  const colorBackground = colors[0] || colors.background;
+  const colorText = colors[colors.length - 1] || colors.text;
 
   useEffect(() => {
     const p5Instance = new p5(sketch, canvasRef.current);
@@ -33,7 +35,8 @@ const P5Canvas = ({
     p.setup = () => {
       p.createCanvas(canvasWidth, canvasHeight);
       p.noLoop();
-      p.background(colors.background);
+      p.background(colorBackground);
+      p.fill(colorText);
     };
 
     p.draw = () => {
@@ -44,16 +47,12 @@ const P5Canvas = ({
       p.textAlign(p.CENTER, p.CENTER);
 
       blocks.forEach(block => {
-
         // Calculate average color and brightness
         const avgColor = getBlockAverageColor(img, block, samplingInterval);
         const brightness = calculateBrightness(avgColor);
-
         // Select the symbol based on brightness
         const symbol = selectSymbol(brightness);
-
         // Draw the symbol on the canvas
-        p.fill(colors.main);
         p.text(symbol, block.x + block.width / 2, block.y + block.height / 2);
       });
     };

@@ -1,16 +1,17 @@
 // src/App.js
 import React, { useState } from 'react';
 import SymbolPalette from './components/SymbolPalette';
-import PixelArt from './components/PixelArt'
+import PixelArt from './components/PixelArt';
 import { getColorPalette } from './assets/color'; // params: 'theme', 'type'; type: 'categorized' is json, 'gradient' is array
 import './App.css';
 import Select from './components/Select/Select';
 import EdgeDetection from './components/EdgeDetection';
 import Isoline from './components/Isoline';
+import ConcentricMosaic from './components/ConcentricMosaic';
 
 const App = () => {
-  const canvasTypes = ['symbolPalette', 'pixelArt', 'edgeDetection', 'isoline'];
-  const [selectedCanvas, setSelectedCanvas] = useState(canvasTypes[3]);
+  const canvasTypes = ['symbolPalette', 'pixelArt', 'edgeDetection', 'isoline', 'concentricMosaic'];
+  const [selectedCanvas, setSelectedCanvas] = useState(canvasTypes[4]);
 
   // Shared parameters
   const imagePath = '/man.jpg';
@@ -37,11 +38,19 @@ const App = () => {
   const isolineDensity = 5;
   const isolineColors = getColorPalette('default', 'gradient');
 
+  // Concentric Mosaic specific
+  const mosaicGridSize = 35;
+  const mosaicMinDensity = 1;
+  const mosaicMaxDensity = 10;
+  const densityInterval = 0.9;
+  const mosaicColors = getColorPalette('default', 'categorized');
+
   const canvasOptions = [
     { value: 'symbolPalette', label: 'Symbol Palette' },
     { value: 'pixelArt', label: 'Pixel Art' },
     { value: 'edgeDetection', label: 'Edge Detection' },
-    { value: 'isoline', label: 'Isoline' }
+    { value: 'isoline', label: 'Isoline' },
+    { value: 'concentricMosaic', label: 'Concentric Mosaic' }
   ];
 
   return (
@@ -64,7 +73,7 @@ const App = () => {
             aspectRatio={symbolAspectRatio}
             colors={symbolColors}
             samplingInterval={symbolSamplingInterval}
-        />
+          />
         )}
         {selectedCanvas === 'pixelArt' && (
           <PixelArt 
@@ -93,6 +102,18 @@ const App = () => {
             canvasHeight={canvasHeight}
             colors={isolineColors}
             isolineDensity={isolineDensity}
+          />
+        )}
+        {selectedCanvas === 'concentricMosaic' && (
+          <ConcentricMosaic 
+            imagePath={imagePath}
+            canvasWidth={canvasWidth}
+            canvasHeight={canvasHeight}
+            gridSize={mosaicGridSize}
+            minDensity={mosaicMinDensity}
+            maxDensity={mosaicMaxDensity}
+            densityInterval={densityInterval}
+            colors={mosaicColors}
           />
         )}
       </div>

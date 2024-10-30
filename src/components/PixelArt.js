@@ -12,10 +12,9 @@ const P5Canvas = ({
   canvasHeight,
   pixelSize,
   colors,
-  samplingInterval 
+  samplingInterval
 }) => {
   const patternSize = 4;
-  const blockSize = pixelSize * patternSize;
   
   const canvasRef = useRef();
 

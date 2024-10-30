@@ -9,11 +9,14 @@ const P5Canvas = ({
   canvasWidth = 1024,
   canvasHeight = 768,
   colors,
-  gridSize = 35,           // Size of each marching square cell
-  minDensity = 2,           // Minimum density for light areas
-  maxDensity = 10           // Maximum density for dark areas
+  gridSize = 16,            // Size of each square cell
+  minDensity = 1,           // Minimum density for light areas
+  maxDensity = 1,           // Maximum density for dark areas
+  densityInterval = 0.5     // The interval between different density values
 }) => {
   const canvasRef = useRef();
+  const colorBackground = colors[colors.length - 1] || colors.background;
+  const colorStroke = colors[0] || colors.text;
 
   useEffect(() => {
     const p5Instance = new p5(sketch, canvasRef.current);
@@ -30,8 +33,8 @@ const P5Canvas = ({
     p.setup = () => {
       p.createCanvas(canvasWidth, canvasHeight);
       p.noLoop();
-      p.background(colors.background || 255);
-      p.stroke(colors.stroke || 0);
+      p.background(colorBackground);
+      p.stroke(colorStroke);
       p.noFill();
     };
 
@@ -43,11 +46,10 @@ const P5Canvas = ({
           // Get the average color and brightness of the current cell
           const avgColor = getBlockAverageColor(img, { x, y, width: gridSize, height: gridSize });
           const brightness = calculateBrightness(avgColor);
-
           // Map brightness to density (higher brightness -> lower density)
-          const density = p.map(brightness, 0, 255, maxDensity, minDensity);
-          
-          // Draw isolines based on density
+          const rawDensity = p.map(brightness, 0, 255, maxDensity, minDensity);
+          const density = Math.floor(rawDensity / densityInterval) * densityInterval;
+          // Draw squares based on density
           for (let d = 0; d < density; d++) {
             const offset = (d / density) * gridSize;
             p.rect(x + offset, y + offset, gridSize - 2 * offset, gridSize - 2 * offset);
