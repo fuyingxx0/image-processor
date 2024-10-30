@@ -16,12 +16,12 @@ const categorizedColorPalettes = {
     secondary: '#003300',  // Very dark green as secondary
   },
   default: {
-    background: '#FFFFFF', // White
-    text: '#000000',       // Black
-    main: '#007ACC',       // Blue
-    accent: '#00A3E0',     // Light blue
-    secondary: '#CCCCCC',  // Light gray
-  }
+    background: '#F5F5F5', // Soft off-white background
+    text: '#333333',       // Dark gray for text, softer than black
+    main: '#5A9BD4',       // Soft, muted blue for main elements
+    accent: '#FF6F61',     // Warm coral for accents
+    secondary: '#A0A0A0',  // Medium gray for secondary elements
+  }  
 };
 
 const gradientColorPalettes = {

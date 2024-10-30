@@ -39,11 +39,11 @@ const App = () => {
   const isolineColors = getColorPalette('default', 'gradient');
 
   // Concentric Mosaic specific
-  const mosaicGridSize = 35;
+  const mosaicGridSize = 40;
   const mosaicMinDensity = 1;
   const mosaicMaxDensity = 10;
-  const densityInterval = 0.9;
-  const mosaicColors = getColorPalette('default', 'categorized');
+  const densityInterval = 0.3;
+  const mosaicColors = getColorPalette('default', 'gradient');
 
   const canvasOptions = [
     { value: 'symbolPalette', label: 'Symbol Palette' },
